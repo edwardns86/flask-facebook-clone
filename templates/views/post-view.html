@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{%block head %}
+<title>edbook post viewer</title>
+<meta name="description" content="edbook post viewer">
+<meta name="author" content="ed">
+{%endblock head%}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="column">
+            <div class="card " style="width: 24rem;">
+                {% if post.image_url == "" %}
+                <div class="card-body">
+                    <p class="card-text">{{post.body}}</p>
+                    <p class="card-text"><small class="text-muted">{{post.created_at}}</small></p>
+                    {% if current_user.id == post.user_id %}
+                    <a href="#" class="btn btn-primary">Edit Post</a>
+                    {% include 'components/post_editor.html' %}
+                    <a href="#" class="btn btn-primary">Comment</a>
+                    {% for comment in comments %}
+                        {% include 'components/comments-feed.html' %}
+                    {% endfor %}
+                        {% include 'components/comment.html' %}
+                    {% else %}
+                    <a href="#" class="btn btn-primary">Comment</a>
+                    {% for comment in comments %}
+                        {% include 'components/comments-feed.html' %}
+                    {% endfor %}
+                        {% include 'components/comment.html' %}
+                    {% endif %}
+
+                    {% else %}
+                    <img src="{{post.image_url}}" class="card-img-top" alt="an edbook image">
+                    <div class="card-body">
+                        <p class="card-text">{{post.body}}</p>
+                        <p class="card-text"><small class="text-muted">{{post.created_at}}</small></p>
+                        {% if current_user.id == post.user_id %}
+                        <a href="#" class="btn btn-primary">Edit Post</a>
+                        {% include 'components/post_editor.html' %}
+                        <a href="#" class="btn btn-primary">Comment</a>
+                        {% for comment in comments %}
+                            {% include 'components/comments-feed.html' %}
+                        {% endfor %}
+                            {% include 'components/comment.html' %}
+                        {% else %}
+                        <a href="#" class="btn btn-primary">Comment</a>
+                        {% for comment in comments %}
+                            {% include 'components/comments-feed.html' %}
+                        {% endfor %}
+                            {% include 'components/comment.html' %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container">
+
+</div>
+
+{% endblock content%}

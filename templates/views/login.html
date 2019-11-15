@@ -4,12 +4,10 @@
 <title>edbook home page</title>
     <meta name="description" content="edbook home">
     <meta name="author" content="ed">
-
 {% endblock head %}
 
 {% block content %}
-
-{% include 'components/post-creator.html'%}
-{% include 'components/post-feed.html' %}
-
+<div class='login-form col-6 vh-100' >
+{% include 'components/registrationform.html' %}
+</div>
 {% endblock content %}

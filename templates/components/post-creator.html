@@ -1,13 +1,14 @@
 <div class='post-creator-form container'>
     <div class="card">
         <div class="card-header">
-            Create Post
+                <img class="circle" src="{{current_user.avatar_url}}" alt="avatar"  > Create a post on edbook...
         </div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" action="/post">
                 <div class="form-group">
-                    <input autofocus type="text" name='name' class="form-control" id="formGroupExampleInput"
-                        placeholder="What's on your mind {{current_user.email}}, is it Ed?">
+                    <input autofocus type="text" name='body' class="form-control" id="formGroupExampleInput"
+                        placeholder="What's on your mind {{current_user.name}}, is it Ed?">
+                    <input type="text" name='image_url' class="form-control" id="formGroupExampleInput" placeholder="paste in an image url here if you want">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

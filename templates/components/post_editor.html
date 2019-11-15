@@ -1,0 +1,17 @@
+<div class='post-editor-form container'>
+    <div class="card">
+        <div class="card-header ">
+                <img class="circle" src="{{current_user.avatar_url}}" alt="avatar"  >Edit Post
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/posts/{{post.id}}">
+                <div class="form-group">
+                    <input type="text" name='body' class="form-control" id="formGroupExampleInput"
+                        value="{{post.body}}">
+                    <input type="text" name='image_url' class="form-control" id="formGroupExampleInput" value="{{post.image_url}}">
+                </div>
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+        </div>
+    </div>
+</div>
