@@ -13,21 +13,50 @@ login_manager = LoginManager(app)
 
 db = SQLAlchemy(app) 
 
+
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+)
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     email = db.Column(db.String(255), nullable = False , unique = True)
     password = db.Column(db.String(300), nullable = False) 
-    name = db.Column(db.String(100), nullable = True)
+    name = db.Column(db.String(100), nullable = False , unique = True)
     avatar_url = db.Column(db.String, server_default="https://cdn0.iconfinder.com/data/icons/hr-business-and-finance/100/face_human_blank_user_avatar_mannequin_dummy-512.png"
     )
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     def generate_password(self, password):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
+
+    def followed_posts(self):
+        followed = Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+                followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -50,6 +79,7 @@ class Comment(db.Model):
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
 
+
 db.create_all()
 
 @login_manager.user_loader
@@ -66,11 +96,19 @@ def root():
     
     if request.args.get('filter') == 'oldest':
         posts = Post.query.order_by(Post.created_at.asc()).all()
-        return render_template('views/index.html', posts = posts)
+        
+    if request.args.get('filter') == 'yours':
+        posts = Post.query.filter(Post.user_id == current_user.id).order_by(Post.created_at.desc()).all()
+
+    if request.args.get('filter') == 'popular':
+        pass
+        # post = Post.query.order_by(post.count_comments).desc().all() doesn't work refrencing post within its own function
+
     for post in posts: 
         user = User.query.get(post.user_id)
         post.username = user.name
         post.avatar_url = user.avatar_url
+        post.count_comments = Comment.query.filter_by(post_id = post.id).count()
     return render_template('views/index.html', posts = posts)
 
 @app.route('/logout')
@@ -138,14 +176,44 @@ def create_post():
 def view_post(id):
 
     post = Post.query.get(id)
+    user = User.query.get(post.user_id)
+    post.username = user.name
+    post.avatar_url = user.avatar_url
     comments = Comment.query.filter_by(post_id = post.id).all()
-    
+    post.count_comments = Comment.query.filter_by(post_id = post.id).count()
     for comment in comments: 
         user = User.query.get(comment.user_id)
         comment.username = user.name
         comment.avatar_url = user.avatar_url
-    
+        
     return render_template('views/post-view.html', post = post , comments = comments ) 
+
+@app.route('/posts/<id>', methods= ['POST'])
+@login_required
+def edit_post(id):
+    post = Post.query.get(id)
+    if request.method == 'POST':
+        post.body = request.form['body']
+        post.image_url = request.form['image_url']
+        db.session.commit()
+        flash('Thank you for editing your post on edbook the smallest social network in the world', 'success')
+        return redirect(url_for('view_post', id=id))  
+
+@app.route('/posts/<id>/delete', methods=['POST'])
+@login_required 
+def delete_post(id):
+    if request.method == 'POST':
+        post = Post.query.get(id) 
+        user = User.query.get(post.user_id)
+        comments = Comment.query.filter_by(post_id = post.id).all() 
+        if not post:
+            flash("The post you are looking for doesn't exist")
+            return redirect(url_for('root'))
+        db.session.delete(post)
+        db.session.commit()
+        flash('We have deleted your post from edbook', 'success')
+        return redirect(url_for('root'))
+    return "404 error"    
 
 @app.route('/posts/<id>/comments', methods= ['POST'])
 @login_required
@@ -163,17 +231,62 @@ def create_comment(id):
         return redirect(url_for('view_post', id=id))
 
 
-
-@app.route('/posts/<id>', methods= ['POST'])
+@app.route('/comments/<id>/edit', methods= ['POST'])
 @login_required
-def edit_post(id):
-    post = Post.query.get(id)
+def edit_comment(id):
+    comment = Comment.query.get(id)
     if request.method == 'POST':
-        post.body = request.form['body']
-        post.image_url = request.form['image_url']
+        comment.body = request.form['body']
+        comment.image_url = request.form['image_url']
         db.session.commit()
-        flash('Thank you for editing your post on edbook the smallest social network in the world', 'success')
-        return redirect(url_for('view_post', id=id))   
+        flash('Thank you for editing your comment on edbook the smallest social network in the world', 'success')
+        return redirect(url_for('root'))  
+
+
+@app.route('/comments/<id>/delete', methods = ['POST'])
+@login_required
+def delete_comment(id):
+    if request.method == 'POST':
+        comment = Comment.query.get(id)
+        user = User.query.get(comment.user_id)
+        if not comment:
+            flash("The comment you are looking for doesn't exist")
+            return redirect(url_for('root'))
+        db.session.delete(comment)
+        db.session.commit()
+        flash('We have deleted your comment from edbook', 'success')
+        return redirect(url_for('root'))  
+
+@app.route('/follow/<name>')
+@login_required
+def follow(name):
+    user = User.query.filter_by(name=name).first()
+    if user is None:
+        flash('User {} not found.'.format(name))
+        return redirect(url_for('root'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('root', name=name))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are following {}!'.format(name))
+    return redirect(url_for('root', name=name))
+
+@app.route('/unfollow/<name>')
+@login_required
+def unfollow(name):
+    user = User.query.filter_by(name=name).first()
+    if user is None:
+        flash('User {} not found.'.format(name))
+        return redirect(url_for('root'))
+    if user == current_user:
+        flash('You cannot unfollow yourself!')
+        return redirect(url_for('root', name=name))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash('You are not following {}.'.format(name))
+    return redirect(url_for('root', name=name))
+
 
 
 if __name__ == "__main__":

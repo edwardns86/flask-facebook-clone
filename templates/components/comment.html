@@ -1,12 +1,12 @@
 <div class='post-comment-form container'>
     <div class="card">
         <div class="card-header">
-                <img src="{{current_user.avatar_url}}" alt="avatar" style="height:30px" > Comment On Post
+                <img class="circle" src="{{current_user.avatar_url}}" alt="avatar" style="height:30px" > Comment On Post
         </div>
         <div class="card-body">
             <form method="POST" action="/posts/{{post.id}}/comments">
                 <div class="form-group">
-                    <input type="text" name='body' class="form-control" id="formGroupExampleInput"
+                    <input autofocus type="text" name='body' class="form-control" id="formGroupExampleInput"
                         placeholder="Write a comment {{current_user.name}}">
                     <input type="text" name='image_url' class="form-control" id="formGroupExampleInput" placeholder="paste in an image url here if you want">
                 </div>

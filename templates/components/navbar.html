@@ -14,10 +14,22 @@
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('root', filter = 'oldest')}}">Oldest</a>
       </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{url_for('root', filter = 'yours')}}">Your Posts</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{url_for('root', filter = 'popular')}}">Popular</a>
+      </li>
+
+
+
     </ul>
     <ul class="navbar-nav justify-end">
+      <li>
+          <a class="nav-link" href="{{url_for('root', filter = 'yours')}}">Hi,{{current_user.name}}</a>
+      </li>
       <li class="nav-item " >
-            <a  class="nav-link " href="{{url_for('root', filter = 'oldest')}}"><img  class="circle" src="{{current_user.avatar_url}} " > </a>
+            <a  class="nav-link " href="{{url_for('root', filter = 'yours')}}"><img  class="circle" src="{{current_user.avatar_url}} " > </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/logout">Log Out</a>
