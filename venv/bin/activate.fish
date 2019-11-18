@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/edwardstevens/Desktop/CoderSchool/flask-fb/venv"
+set -gx VIRTUAL_ENV "/Users/stevenkeezer/Documents/Sierra/facebook-partner/flask-facebook-clone/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
