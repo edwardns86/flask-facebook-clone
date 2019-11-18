@@ -1,40 +1,56 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">edbook</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-    {% if current_user.is_authenticated %}
-    
+    <ul class="navbar-nav mr-auto">
+      {% if current_user.is_authenticated %}
+
       <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/"
+          >Home <span class="sr-only">(current)</span></a
+        >
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{url_for('root', filter = 'oldest')}}">Oldest</a>
+        <a class="nav-link" href="{{url_for('root', filter = 'oldest')}}"
+          >Oldest</a
+        >
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="{{url_for('root', filter = 'yours')}}">Your Posts</a>
+        <a class="nav-link" href="{{url_for('root', filter = 'yours')}}"
+          >Your Posts</a
+        >
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="{{url_for('root', filter = 'popular')}}">Popular</a>
+        <a class="nav-link" href="{{url_for('root', filter ='popular')}}"
+          >Popular</a
+        >
       </li>
-
-
-
     </ul>
     <ul class="navbar-nav justify-end">
       <li>
-          <a class="nav-link" href="{{url_for('root', filter = 'yours')}}">Hi,{{current_user.name}}</a>
+        <a class="nav-link" href="{{url_for('root', filter = 'yours')}}"
+          >Hi,{{current_user.name}}</a
+        >
       </li>
-      <li class="nav-item " >
-            <a  class="nav-link " href="{{url_for('root', filter = 'yours')}}"><img  class="circle" src="{{current_user.avatar_url}} " > </a>
+      <li class="nav-item ">
+        <a class="nav-link " href="{{url_for('root', filter = 'yours')}}"
+          ><img class="circle" src="{{current_user.avatar_url}} " />
+        </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/logout">Log Out</a>
       </li>
-    {% else %}
+      {% else %}
     </ul>
     <ul class="navbar-nav justify-end">
       <li class="nav-item">
@@ -43,7 +59,7 @@
       <li class="nav-item">
         <a class="nav-link" href="/register">Register</a>
       </li>
-    {% endif %}
+      {% endif %}
     </ul>
   </div>
 </nav>
