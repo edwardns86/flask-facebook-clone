@@ -4,8 +4,6 @@ from flask_login import UserMixin, LoginManager, login_required, login_user, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 
-
-
 app = Flask (__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
@@ -16,7 +14,6 @@ db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
 migrate = Migrate(app, db)
-
 
 
 followers = db.Table('followers',
