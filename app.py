@@ -102,7 +102,7 @@ def root():
 
     if request.args.get('filter') == 'popular':
         pass
-        # post = Post.query.order_by(post.count_comments).desc().all() doesn't work refrencing post within its own function
+        # posts = Post.query.order_by(post.count_comments).desc().all() 
 
     for post in posts: 
         user = User.query.get(post.user_id)

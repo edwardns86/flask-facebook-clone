@@ -5,7 +5,6 @@ function toggleEditView() {
     } else {
         x.style.display = "none";
     }
-
 }
 
 
@@ -16,7 +15,6 @@ function toggleCommentView() {
     } else {
         x.style.display = "none";
     }
-    console.log("testing if the function fires")
 }
 
 function toggleEditCommentView() {
@@ -26,7 +24,6 @@ function toggleEditCommentView() {
     } else {
         x.style.display = "none";
     }
-
 }
 
 
