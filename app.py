@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_migrate import Migrate
+
+
 
 app = Flask (__name__)
 
@@ -9,9 +12,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "Secret"
 
-login_manager = LoginManager(app)
-
 db = SQLAlchemy(app) 
+
+login_manager = LoginManager(app)
+migrate = Migrate(app, db)
+
 
 
 followers = db.Table('followers',
@@ -25,6 +30,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(255), nullable = False , unique = True)
     password = db.Column(db.String(300), nullable = False) 
     name = db.Column(db.String(100), nullable = False , unique = True)
+    
     avatar_url = db.Column(db.String, server_default="https://cdn0.iconfinder.com/data/icons/hr-business-and-finance/100/face_human_blank_user_avatar_mannequin_dummy-512.png"
     )
     followed = db.relationship(
@@ -66,6 +72,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    view_count = db.Column(db.Integer, default=0)
 
 
 class Comment(db.Model):
@@ -101,8 +108,7 @@ def root():
         posts = Post.query.filter(Post.user_id == current_user.id).order_by(Post.created_at.desc()).all()
 
     if request.args.get('filter') == 'popular':
-        pass
-        # posts = Post.query.order_by(post.count_comments).desc().all() 
+        posts = Post.query.order_by(Post.view_count.desc()).all() 
 
     for post in posts: 
         user = User.query.get(post.user_id)
@@ -171,11 +177,19 @@ def create_post():
         return redirect(url_for('root'))
     return redirect(url_for('root')) 
 
-@app.route('/posts/<id>')
+@app.route('/posts/<int:id>', methods=["GET", 'POST'])
 @login_required
 def view_post(id):
-
     post = Post.query.get(id)
+    post.view_count = post.view_count + 1
+    db.session.add(post)
+    db.session.commit()
+    if request.method == 'POST':
+        post.body = request.form['body']
+        post.image_url = request.form['image_url']
+        db.session.commit()
+        flash('Thank you for editing your post on edbook the smallest social network in the world', 'success')
+        return redirect(url_for('view_post', id=id))  
     user = User.query.get(post.user_id)
     post.username = user.name
     post.avatar_url = user.avatar_url
@@ -188,16 +202,6 @@ def view_post(id):
         
     return render_template('views/post-view.html', post = post , comments = comments ) 
 
-@app.route('/posts/<id>', methods= ['POST'])
-@login_required
-def edit_post(id):
-    post = Post.query.get(id)
-    if request.method == 'POST':
-        post.body = request.form['body']
-        post.image_url = request.form['image_url']
-        db.session.commit()
-        flash('Thank you for editing your post on edbook the smallest social network in the world', 'success')
-        return redirect(url_for('view_post', id=id))  
 
 @app.route('/posts/<id>/delete', methods=['POST'])
 @login_required 
