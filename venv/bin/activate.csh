@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/Users/edwardstevens/Desktop/CoderSchool/flask-fb/venv"
+setenv VIRTUAL_ENV "/Users/stevenkeezer/Documents/Sierra/facebook-partner/flask-facebook-clone/venv"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
