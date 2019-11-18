@@ -31,8 +31,11 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(300), nullable = False) 
     name = db.Column(db.String(100), nullable = False , unique = True)
     
+
     avatar_url = db.Column(db.String, server_default="https://cdn0.iconfinder.com/data/icons/hr-business-and-finance/100/face_human_blank_user_avatar_mannequin_dummy-512.png"
     )
+    posts = db.relationship('Post', backref='user', lazy=True)
+
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -69,7 +72,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer,  db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     view_count = db.Column(db.Integer, default=0)
