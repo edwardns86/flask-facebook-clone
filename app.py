@@ -15,7 +15,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 migrate = Migrate(app, db)
 
-
 followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
@@ -27,12 +26,12 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(255), nullable = False , unique = True)
     password = db.Column(db.String(300), nullable = False) 
     name = db.Column(db.String(100), nullable = False , unique = True)
-    
-
     avatar_url = db.Column(db.String, server_default="https://cdn0.iconfinder.com/data/icons/hr-business-and-finance/100/face_human_blank_user_avatar_mannequin_dummy-512.png"
     )
     posts = db.relationship('Post', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
 
+    # FOLLOWERS ISNT WORKING YET
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -69,10 +68,11 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String)
-    user_id = db.Column(db.Integer,  db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer,  db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     view_count = db.Column(db.Integer, default=0)
+    post_comments = db.relationship('Comment', backref='post', lazy=True)
 
 
 class Comment(db.Model):
@@ -80,13 +80,11 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String)
-    user_id = db.Column(db.Integer, nullable=False)
-    post_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer,  db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.Integer,  db.ForeignKey('posts.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-
-
-
+    
 db.create_all()
 
 @login_manager.user_loader
@@ -111,9 +109,6 @@ def root():
         posts = Post.query.order_by(Post.view_count.desc()).all() 
 
     for post in posts: 
-        user = User.query.get(post.user_id)
-        post.username = user.name
-        post.avatar_url = user.avatar_url
         post.count_comments = Comment.query.filter_by(post_id = post.id).count()
     return render_template('views/index.html', posts = posts)
 
@@ -151,7 +146,7 @@ def register():
         
         new_user = User(name=request.form['name'],  
                         email=request.form['email'],
-                        avatar_url = request.form['avatar_url']
+                        avatar_url = request.form['avatar_url' ] or "https://cdn0.iconfinder.com/data/icons/hr-business-and-finance/100/face_human_blank_user_avatar_mannequin_dummy-512.png"
                         )
         new_user.generate_password(request.form['password'])  
         db.session.add(new_user) # then we add new user to our session
@@ -190,16 +185,10 @@ def view_post(id):
         db.session.commit()
         flash('Thank you for editing your post on edbook the smallest social network in the world', 'success')
         return redirect(url_for('view_post', id=id))  
-    user = User.query.get(post.user_id)
-    post.username = user.name
-    post.avatar_url = user.avatar_url
     comments = Comment.query.filter_by(post_id = post.id).all()
     post.count_comments = Comment.query.filter_by(post_id = post.id).count()
-    for comment in comments: 
-        user = User.query.get(comment.user_id)
-        comment.username = user.name
-        comment.avatar_url = user.avatar_url
-        
+    
+
     return render_template('views/post-view.html', post = post , comments = comments ) 
 
 
@@ -290,7 +279,6 @@ def unfollow(name):
     db.session.commit()
     flash('You are not following {}.'.format(name))
     return redirect(url_for('root', name=name))
-
 
 
 if __name__ == "__main__":

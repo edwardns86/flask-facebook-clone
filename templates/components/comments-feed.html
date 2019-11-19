@@ -2,7 +2,7 @@
         {% if comment.image_url == "" %} 
         <div class="card-body">
                 <h1></h1>
-            <h5 class="card-title"><img class="circle" src="{{comment.avatar_url}}" alt="commenter avatar" style="height:30px" >{{comment.username}}</h5>
+            <h5 class="card-title"><img class="circle" src="{{comment.user.avatar_url}}" alt="commenter avatar" style="height:30px" >{{comment.user.name}}</h5>
             <p class="card-text">{{comment.body}}</p>
             <p class="card-text"><small class="text-muted">{{comment.created_at}}</small></p>
             {% if current_user.id == post.user_id or current_user.id == comment.user_id  %}
@@ -18,7 +18,7 @@
         <img src="{{comment.image_url}}" class="card-img-top" alt="an edbook image">
         <div class="card-body">
                 <h1></h1>
-            <h5 class="card-title"><img src="{{comment.avatar_url}}" alt="commenter avatar" style="height:30px" >{{comment.username}}</h5>
+            <h5 class="card-title"><img src="{{comment.user.avatar_url}}" alt="commenter avatar" style="height:30px" >{{comment.user.name}}</h5>
             <p class="card-text">{{comment.body}}</p>
             <p class="card-text"><small class="text-muted">{{comment.created_at}}</small></p>
             {% if current_user.id == post.user_id or current_user.id == comment.user_id  %}

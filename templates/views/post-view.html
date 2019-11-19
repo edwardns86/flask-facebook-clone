@@ -13,9 +13,9 @@
             <a href="{{url_for('view_post', id = post.id)}}"
               ><img
                 class="circle"
-                src="{{post.avatar_url}}"
+                src="{{post.user.avatar_url}}"
                 alt="posters avatar"
-              />{{post.username}}</a
+              />{{post.user.name}}</a
             >
           </div>
           <p class="card-text">{{post.body}}</p>
@@ -63,9 +63,9 @@
             <a href="{{url_for('view_post', id = post.id)}}"
               ><img
                 class="circle"
-                src="{{post.avatar_url}}"
+                src="{{post.user.avatar_url}}"
                 alt="posters avatar"
-              />{{post.username}}</a
+              />{{post.user.name}}</a
             >
           </div>
           <img

@@ -6,14 +6,14 @@
         {% if post.image_url == "" %} 
         <div class="text-white bg-primary">
                 <img > 
-                <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.avatar_url}}" alt="posters avatar">{{post.username}}</a></div>
+                <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.user.avatar_url}}" alt="posters avatar">{{post.user.name}}</a></div>
                 <p class="card-text"  >{{post.body}}</p> 
                 <p class="card-text"><small class="text-white">{{post.created_at}}</small></p>
                 <p>Comments:{{post.count_comments}}</p>
                 
         </div>
         {% else %}
-        <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.avatar_url}}" alt="posters avatar">{{post.username}}</a></div>
+        <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.user.avatar_url}}" alt="posters avatar">{{post.user.name}}</a></div>
         
         <div class="card-body">
             <img class="card-img-top " src={{post.image_url}} alt="Card image cap">
