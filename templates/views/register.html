@@ -7,27 +7,28 @@
 
 
 {% block content %}
-<div class="container d-flex">
-<div class='login-form col-6 vh-100' >
-    <form method="POST">
-        
+
+<div class='login-form container col-xl-6 col-lg-6 col-md-9  col-s-12 col-12 ' >
+        <h1 class="sign-in-logo"> edbook </h1>
+    <form method="POST" class="form-signin">
+            <h2 class="h3 mb-3 font-weight-normal">Please create an account</h2>
         <div class="form-group">
-            <label for="exampleInputEmail1">Your name:</label>
-            <input type="text" name='name' class="form-control" id="formGroupExampleInput" placeholder="your name">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" name='email' class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                placeholder="Enter email">
-            <label for="exampleInputEmail1">Avatar Url</label>
-            <input type="image_url" name='avatar_url' class="form-control" id="avatarURL" aria-describedby="..."
-                placeholder="Enter a link to your avatar image url">
+            <label for="exampleInputEmail1" class="sr-only">Enter your username...</label>
+            <input type="text" name='name' class="form-control mt-2" id="formGroupExampleInput" placeholder="Enter your username...">
+            <label for="exampleInputEmail1" class="sr-only">Enter a valid e-mail address...</label>
+            <input type="email" name='email' class="form-control mt-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+                placeholder="Enter a valid e-mail address...">
+            <label for="exampleInputEmail1" class="sr-only" >Avatar Url</label>
+            <input type="image_url" name='avatar_url' class="form-control mt-2" id="avatarURL" aria-describedby="..."
+                placeholder="Enter a link to your avatar image url ...">
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
+            <label for="exampleInputPassword1" class="sr-only">Password</label>
             <input type="password" name='password' class="form-control" id="exampleInputPassword1"
                 placeholder="Password">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-</div>
+
 {% endblock %}

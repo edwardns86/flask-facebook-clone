@@ -33,7 +33,8 @@ animation: AnimationName 200s ease infinite;
 }
 .sign-in-logo {
     color: #4267b2;
-    size: 7rem;
+    font-size: 7rem;
+    text-align: center;
 }
 
 
@@ -52,3 +53,9 @@ animation: AnimationName 200s ease infinite;
     border-radius: 90%;
 }
 
+.form-signin {
+    background-color: rgba(106, 147, 224, 0.5); 
+    
+    padding: 30px;
+    border-radius: 5px;;
+}
