@@ -7,9 +7,11 @@ import os
 
 app = Flask (__name__)
 
-
+print("ed", os.environ.get('DATABASE_URL'))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///database.sqlite3'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['MAILGUN_KEY'] = 'YOUR-KEY-HERE'
+app.config['MAILGUN_DOMAIN'] = 'YOUR-MAILGUN-DOMAIN'
 app.secret_key = "Secret"
 
 db = SQLAlchemy(app) 

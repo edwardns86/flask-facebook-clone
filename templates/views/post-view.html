@@ -3,10 +3,9 @@
 <meta name="description" content="edbook post viewer" />
 <meta name="author" content="ed" />
 {%endblock head%} {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="column">
-      <div class="card " style="width: 24rem;">
+<div class="container-fluid col-xl-6 col-lg-6   col-md-9  col-s-12 col-12">
+  
+      <div class="card " >
         {% if post.image_url == "" %}
         <div class="card-body">
           <div class="card-header text-primary bg-white">
@@ -115,8 +114,7 @@
           {% endif %}
         </div>
       </div>
-    </div>
-  </div>
+    
 </div>
 <div class="container"></div>
 

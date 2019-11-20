@@ -1,22 +1,26 @@
-<div class="row">
-<div class="col">
-<div class='card-columns'>
+<div class="container col-xl-6 col-lg-6   col-md-9  col-s-12 col-12">
+
+        <div class="card text-white bg mt-1 mb-1" >
+            <div class="card-header">Check out your latest feed {{current_user.name}} ... </div>
+        </div>
     {% for post in posts %}
-    <div  class="card m-auto" style="width: 24rem;">
+    <div  class="card my-3 mx-auto" >
         {% if post.image_url == "" %} 
-        <div class="text-white bg-primary">
-                <img > 
+        <div class="text-white bg">
+                
                 <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.user.avatar_url}}" alt="posters avatar">{{post.user.name}}</a></div>
+                <div class="card-body">
+
                 <p class="card-text"  >{{post.body}}</p> 
                 <p class="card-text"><small class="text-white">{{post.created_at}}</small></p>
                 <p>Comments:{{post.count_comments}}</p>
-                
+            </div>
         </div>
         {% else %}
-        <div class="card-header text-primary bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.user.avatar_url}}" alt="posters avatar">{{post.user.name}}</a></div>
+        <div class="card-header text-info bg-white"><a href="{{url_for('view_post', id = post.id)}}"><img class="circle" src="{{post.user.avatar_url}}" alt="posters avatar">{{post.user.name}}</a></div>
         
         <div class="card-body">
-            <img class="card-img-top " src={{post.image_url}} alt="Card image cap">
+            <img class="card-img " src={{post.image_url}} alt="Card image cap">
             
             <p class="card-text">{{post.body}}</p>
             <p class="card-text"><small class="text-muted">{{post.created_at}}</small></p>
@@ -27,6 +31,5 @@
         
     </div>
     {% endfor %}
-</div>
-</div>
+
 </div>
